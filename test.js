@@ -3,12 +3,19 @@ var sys=require("sys");
 var fs=require("fs");
 var test=require("mjsunit");
 
-
 // Test HMAC
-var h1 = (new crypto.Hmac).init("sha1", "Node").update("some data").update("to hmac").digest("hex");
+test.assertEquals("Hmac" in crypto, true, "crypto.Hmac exists");
+
+var h1 = (new crypto.Hmac).init("sha1", "Node")
+                          .update("some data")
+                          .update("to hmac")
+                          .digest("hex");
 test.assertEquals(h1, '19fd6e1ba73d9ed2224dd5094a71babe85d9a892', "test HMAC");
 
+
 // Test hashing
+test.assertEquals("Hash" in crypto, true, "crypto.Hash exists");
+
 var a0 = (new crypto.Hash).init("sha1").update("Test123").digest("hex");
 var a1 = (new crypto.Hash).init("md5").update("Test123").digest("binary");
 var a2=  (new crypto.Hash).init("sha256").update("Test123").digest("base64");
@@ -25,6 +32,8 @@ var keyPem = fs.readFileSync("test_key.pem");
 var certPem = fs.readFileSync("test_cert.pem");
 
 // Test signing and verifying
+test.assertEquals("Sign" in crypto, true, "crypto.Sign exists");
+
 var s1 = (new crypto.Sign).init("RSA-SHA1").update("Test123").sign(keyPem, "base64");
 var verified = !!((new crypto.Verify).init("RSA-SHA1").update("Test").update("123").verify(certPem, s1, "base64"));
 test.assertTrue(verified, "sign and verify (base 64)");
@@ -34,6 +43,9 @@ var verified = !!((new crypto.Verify).init("RSA-SHA256").update("Test").update(
 test.assertTrue(verified, "sign and verify (binary)");
 
 // Test encryption and decryption
+test.assertEquals("Cipher" in crypto, true, "crypto.Cipher exists");
+test.assertEquals("Decipher" in crypto, true, "crypto.Decipher exists");
+
 var plaintext="Keep this a secret? No! Tell everyone about node.js!";
 
 var cipher=(new crypto.Cipher).init("aes192", "MySecretKey123");
